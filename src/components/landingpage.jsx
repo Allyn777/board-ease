@@ -9,7 +9,8 @@ const LandingPage = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url(/bg-landing.avif)',
+          backgroundImage: "url(/logo-picture/bg-landing.avif)",
+
         }}
       >
         {/* Overlay for better text readability */}
@@ -23,13 +24,23 @@ const LandingPage = () => {
         {/* Hero Section */}
         <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-              Welcome to{' '}
-              <span className="text-[#white]">
-               BoardEase
-              </span>
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed px-4">
+           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight flex items-center gap-4">
+       <div className="flex items-center justify-center gap-5 mb-4 sm:mb-6">
+  {/* Logo next to */}
+  <img 
+    src="../logo-picture/2nd-logo.jpg"
+    alt="BoardEase" 
+    className="w-12 h-12 sm:w-16 sm:h-16 md:w-25 md:h-25 rounded-full"
+  />
+  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+    Welcome to{' '}
+    <span className="text-white">
+      BoardEase
+    </span>
+  </h1>
+</div>
+      </h1>
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed px-4">
             Rent your rooms smarter. Manage everything in one dashboard.
             </p>
             
@@ -71,7 +82,7 @@ const LandingPage = () => {
         {/* Footer */}
         <footer className="bg-black text-white py-8 px-4">
           <div className="max-w-7xl mx-auto text-center">
-            <p className="text-sm md:text-base">© 2024 Fighting Gears. All rights reserved.</p>
+            <p className="text-sm md:text-base">© 2024 Board Ease. All rights reserved.</p>
           </div>
         </footer>
       </div>

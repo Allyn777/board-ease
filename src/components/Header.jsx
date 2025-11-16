@@ -14,15 +14,15 @@ const Header = () => {
   return (
     <header className="bg-[#071E26] border-b border-[#06303a] z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14"> 
+        <div className="flex items-center justify-between h-20"> 
           {/* Logo area */}
           <div className="flex items-center gap-3"> 
-            <button onClick={() => navigate('/home')} className="flex items-center gap-3 focus:outline-none">
+            <button onClick={() => navigate('/home')} className="flex items-center gap-2 focus:outline-none">
               <img
                 src="/logo.png"
                 alt="Board Ease"
-                className="w-10 h-10 rounded-full object-cover"
-                onError={(e) => { e.target.src = '/logo.png'; }}
+                className="w-12 h-auto rounded-full object-contain p-1"
+                onError={(e) => { e.target.src = '../logo-picture/main-logo.jpg'; }}
               />
               <span className="text-white font-semibold tracking-wide hidden sm:inline">BOARD EASE</span>
             </button>
@@ -42,7 +42,7 @@ const Header = () => {
               </svg>
               <span>Rooms</span>
             </button>
-            <button onClick={() => navigate('/bookings')} className={`flex items-center gap-2 text-sm px-3 py-1 rounded ${isActive('/bookings') ? 'text-white bg-[#0b2f36]' : 'text-white hover:text-gray-200'}`}>
+            <button onClick={() => navigate('/profile#my-bookings')} className={`flex items-center gap-2 text-sm px-3 py-1 rounded ${isActive('/bookings') ? 'text-white bg-[#0b2f36]' : 'text-white hover:text-gray-200'}`}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
               </svg>
@@ -100,7 +100,7 @@ const Header = () => {
               </svg>
               <span>Rooms</span>
             </button>
-            <button onClick={() => { setOpen(false); navigate('/bookings'); }} className={`w-full text-left px-3 py-2 rounded flex items-center gap-2 ${isActive('/bookings') ? 'text-white bg-[#0b2f36]' : 'text-white hover:bg-white/5'}`}>
+            <button onClick={() => { setOpen(false); navigate('/profile#my-bookings'); }} className={`w-full text-left px-3 py-2 rounded flex items-center gap-2 ${isActive('/bookings') ? 'text-white bg-[#0b2f36]' : 'text-white hover:bg-white/5'}`}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
               </svg>

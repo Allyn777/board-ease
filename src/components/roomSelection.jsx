@@ -125,152 +125,106 @@ const RoomSelection = () => {
               </button>
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="mb-6 space-y-3">
-              <button
-                onClick={() => {
-                  navigate('/home');
-                  setSidebarOpen(false);
-                }}
-                className={`w-full font-medium py-3 px-4 rounded-lg transition-all duration-200 text-left flex items-center gap-2 relative overflow-hidden group ${
-                  isActive('/home')
-                    ? 'bg-[#061A25] text-white shadow-lg scale-105'
-                    : 'bg-[#061A25] hover:bg-[#0a2535] text-white hover:scale-[1.02]'
-                }`}
-              >
-                <div className={`absolute left-0 top-0 h-full w-1 bg-white transition-all ${
-                  isActive('/home') ? 'w-1' : 'w-0 group-hover:w-1'
-                }`}></div>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span className="font-medium">Home</span>
-                {isActive('/home') && (
-                  <span className="ml-auto w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/rooms');
-                  setSidebarOpen(false);
-                }}
-                className={`w-full font-medium py-3 px-4 rounded-lg transition-all duration-200 text-left flex items-center gap-2 relative overflow-hidden group ${
-                  isActive('/rooms')
-                    ? 'bg-[#0a2535] text-white shadow-lg scale-105 border-2 border-[#061A25]'
-                    : 'bg-[#061A25] hover:bg-[#0a2535] text-white hover:scale-[1.02]'
-                }`}
-              >
-                <div className={`absolute left-0 top-0 h-full w-1 bg-white transition-all ${
-                  isActive('/rooms') ? 'w-1' : 'w-0 group-hover:w-1'
-                }`}></div>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                <span className="font-medium">Rooms</span>
-                {isActive('/rooms') && (
-                  <span className="ml-auto w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/bookings');
-                  setSidebarOpen(false);
-                }}
-                className={`w-full font-medium py-3 px-4 rounded-lg transition-all duration-200 text-left flex items-center gap-2 relative overflow-hidden group ${
-                  isActive('/bookings')
-                    ? 'bg-[#061A25] text-white shadow-lg scale-105'
-                    : 'bg-[#061A25] hover:bg-[#0a2535] text-white hover:scale-[1.02]'
-                }`}
-              >
-                <div className={`absolute left-0 top-0 h-full w-1 bg-white transition-all ${
-                  isActive('/bookings') ? 'w-1' : 'w-0 group-hover:w-1'
-                }`}></div>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <span className="font-medium">Bookings</span>
-                {isActive('/bookings') && (
-                  <span className="ml-auto w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                )}
-              </button>
+            {/* Quick Actions (replaces nav buttons) */}
+            <div className="mb-6 space-y-4">
+              <div className="bg-white rounded-lg p-4 text-center">
+                <div className="text-sm text-gray-600">Results</div>
+                <div className="text-2xl font-bold text-gray-900">{rooms.length}</div>
+                <div className="text-xs text-gray-500">rooms available</div>
+              </div>
             </div>
 
             {/* Rental Filters */}
             <div className="mb-6 space-y-4">
               <div>
-                <label className="block bg-[#061A25] text-white font-medium py-2 px-4 rounded-t-lg text-sm mb-0">
-                  Rental Term
-                </label>
-                <select
-                  value={rentalTerm}
-                  onChange={(e) => setRentalTerm(e.target.value)}
-                  className="w-full border border-gray-300 rounded-b-lg px-4 py-3 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent appearance-none cursor-pointer"
-                >
-                  <option value="One Month">One Month</option>
-                  <option value="Three Months">Three Months</option>
-                  <option value="Six Months">Six Months</option>
-                  <option value="One Year">One Year</option>
-                </select>
+                <div className="flex justify-center">
+                  <div className="bg-[#061A25] text-white rounded-full px-4 py-2 text-sm font-semibold">Rental Term</div>
+                </div>
+                <div className="mt-3 relative">
+                  <select
+                    value={rentalTerm}
+                    onChange={(e) => setRentalTerm(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 bg-white text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent cursor-pointer"
+                  >
+                    <option value="One Month">One Month</option>
+                    <option value="Three Months">Three Months</option>
+                    <option value="Six Months">Six Months</option>
+                    <option value="One Year">One Year</option>
+                  </select>
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               <div>
-                <label className="block bg-[#061A25] text-white font-medium py-2 px-4 rounded-t-lg text-sm mb-0">
-                  Total Pax
-                </label>
-                <select
-                  value={totalPax}
-                  onChange={(e) => setTotalPax(e.target.value)}
-                  className="w-full border border-gray-300 rounded-b-lg px-4 py-3 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent appearance-none cursor-pointer"
-                >
-                  <option value="One Person">One Person</option>
-                  <option value="Two People">Two People</option>
-                  <option value="Three People">Three People</option>
-                  <option value="Four+ People">Four+ People</option>
-                </select>
+                <div className="flex justify-center">
+                  <div className="bg-[#061A25] text-white rounded-full px-4 py-2 text-sm font-semibold">Total Pax</div>
+                </div>
+                <div className="mt-3 relative">
+                  <select
+                    value={totalPax}
+                    onChange={(e) => setTotalPax(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 bg-white text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent cursor-pointer"
+                  >
+                    <option value="One Person">One Person</option>
+                    <option value="Two People">Two People</option>
+                    <option value="Three People">Three People</option>
+                    <option value="Four+ People">Four+ People</option>
+                  </select>
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               <div>
-                <label className="block bg-[#061A25] text-white font-medium py-2 px-4 rounded-t-lg text-sm mb-0">
-                  Rental Rate
-                </label>
-                <select
-                  value={rentalRate}
-                  onChange={(e) => setRentalRate(e.target.value)}
-                  className="w-full border border-gray-300 rounded-b-lg px-4 py-3 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent appearance-none cursor-pointer"
-                >
-                  <option value="5000-10000">5000-10000</option>
-                  <option value="10000-15000">10000-15000</option>
-                  <option value="15000-20000">15000-20000</option>
-                  <option value="20000+">20000+</option>
-                </select>
+                <div className="flex justify-center">
+                  <div className="bg-[#061A25] text-white rounded-full px-4 py-2 text-sm font-semibold">Rental Rate</div>
+                </div>
+                <div className="mt-3 relative">
+                  <select
+                    value={rentalRate}
+                    onChange={(e) => setRentalRate(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 bg-white text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent cursor-pointer"
+                  >
+                    <option value="5000-10000">5000-10000</option>
+                    <option value="10000-15000">10000-15000</option>
+                    <option value="15000-20000">15000-20000</option>
+                    <option value="20000+">20000+</option>
+                  </select>
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* User Actions */}
+            {/* User Actions - replaced with filter actions */}
             <div className="space-y-3">
               <button
-                onClick={() => {
-                  navigate('/profile');
-                  setSidebarOpen(false);
-                }}
+                onClick={() => { setCurrentPage(1); setSidebarOpen(false); }}
                 className="w-full bg-[#061A25] hover:bg-[#0a2535] text-white font-medium py-3 px-4 rounded-lg transition-colors text-left flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Profile
+                Apply Filters
               </button>
               <button
-                onClick={() => {
-                  navigate('/login');
-                  setSidebarOpen(false);
-                }}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-left flex items-center gap-2"
+                onClick={() => { setRentalTerm('One Month'); setTotalPax('One Person'); setRentalRate('10000-15000'); setSidebarOpen(false); }}
+                className="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors text-left flex items-center gap-2 hover:bg-gray-50"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h18M9 3v18M15 3v18" />
                 </svg>
-                Log out
+                Clear Filters
               </button>
             </div>
           </div>
@@ -314,7 +268,7 @@ const RoomSelection = () => {
                       alt={room.title}
                       className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-300"
                       onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1631889993957-c2a2d1e7e3b3?w=600&auto=format&fit=crop&q=80';
+                        e.target.src = 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cm9vbXN8ZW58MHx8MHx8fDA%3D';
                       }}
                     />
                     <div className="absolute top-4 right-4 bg-[#061A25] text-white px-3 py-1 rounded-lg text-sm font-semibold">

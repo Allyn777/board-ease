@@ -162,7 +162,7 @@ const Login = () => {
             {/* Image Background - Right Side */}
             <div className="w-full lg:w-1/2 relative min-h-[200px] sm:min-h-[280px] md:min-h-[360px] lg:min-h-0 overflow-hidden">
               <img
-                src="/login-bg.png"
+                src="../logo-picture/login-bg.png"
                 alt="Interior design"
                 className="w-full h-48 sm:h-64 md:h-96 lg:h-full object-cover"
                 onError={(e) => {
