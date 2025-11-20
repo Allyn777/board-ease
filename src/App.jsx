@@ -6,6 +6,7 @@ import Home from "./components/home";
 import RoomSelection from "./components/roomSelection";
 import RoomDetail from "./components/roomDetail";
 import Profile from "./components/profile";
+import AdminDashboard from "./components/adminDashboard";
 import Notifications from "./components/notifications";
 import { AuthProvider } from "./contexts/AuthContext"; // ✅ already correct
 
@@ -35,6 +36,9 @@ function App() {
 
           {/* Notifications */}
           <Route path="/notifications" element={<Notifications />} />
+
+          {/* Admin Dashboard */}
+          <Route path="/admin" element={<AdminDashboard />} />
 
           {/* 404 fallback */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
