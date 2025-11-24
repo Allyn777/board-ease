@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'  // ← Make sure React is imported
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getValidationErrors } from '../utils/validation'
 import Header from './Header'
@@ -34,8 +34,9 @@ const Login = () => {
       if (res.error) {
         setErrors({ general: res.error.message || 'Login failed' })
       } else {
-        // Success - the auth context will handle the redirect
-        console.log('Login successful, waiting for auth state update...')
+        // Success - the route protection in App.jsx will handle the redirect automatically
+        console.log('Login successful, redirecting...')
+        // The auth state change will trigger the redirect in App.jsx
       }
     } catch (error) {
       setErrors({ general: 'An unexpected error occurred' })
@@ -43,18 +44,6 @@ const Login = () => {
       setIsSubmitting(false)
     }
   }
-
-  // Add this useEffect to handle redirect after auth state changes
-  useEffect(() => {
-    if (auth.user && !auth.loading) {
-      console.log('Redirecting user with role:', auth.userRole)
-      if (auth.userRole === 'admin') {
-        navigate('/admin')
-      } else {
-        navigate('/home')
-      }
-    }
-  }, [auth.user, auth.userRole, auth.loading, navigate])
 
   const handleForgotPassword = async () => {
     if (!formData.login) {
@@ -133,10 +122,10 @@ const Login = () => {
 
                   <button 
                     type="submit" 
-                    disabled={isSubmitting || auth.loading}
+                    disabled={isSubmitting}
                     className="w-full bg-[#061A25] hover:bg-[#1C1C1C] disabled:bg-[#1C1C1C] disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
                   >
-                    {isSubmitting || auth.loading ? 'Logging in...' : 'Login'}
+                    {isSubmitting ? 'Logging in...' : 'Login'}
                   </button>
                 </form>
 

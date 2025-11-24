@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./components/landingpage";
 import Login from "./components/login";
 import Signup from "./components/Signup";
@@ -9,42 +9,134 @@ import Profile from "./components/profile";
 import AdminDashboard from "./components/adminDashboard";
 import Notifications from "./components/notifications";
 import Payment from "./components/payment";
-import { AuthProvider } from "./contexts/authcontext";
+import { AuthProvider, useAuth } from "./contexts/authcontext";
+
+// 🔥 FIXED Protected Route (NO loading screen, NO refresh required)
+const ProtectedRoute = ({ children, requireAdmin = false }) => {
+  const { user, userRole, authChecked } = useAuth();
+
+  // Wait for session check (NO loading UI)
+  if (!authChecked) return null;
+
+  // Not logged in → go to login
+  if (!user) return <Navigate to="/login" replace />;
+
+  // Admin required but user is not admin
+  if (requireAdmin && userRole !== "admin") {
+    return <Navigate to="/home" replace />;
+  }
+
+  return children;
+};
+
+// 🔥 FIXED Public Route (NO refresh required after login)
+const PublicRoute = ({ children }) => {
+  const { user, userRole, authChecked } = useAuth();
+
+  if (!authChecked) return null;
+
+  if (user) {
+    return userRole === "admin"
+      ? <Navigate to="/admin" replace />
+      : <Navigate to="/home" replace />;
+  }
+
+  return children;
+};
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Landing page */}
+
+          {/* Public Landing */}
           <Route path="/" element={<LandingPage />} />
 
-          {/* Auth routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          {/* Auth pages */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
 
-          {/* Home page */}
-          <Route path="/home" element={<Home />} />
+          {/* User protected pages */}
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Room Selection */}
-          <Route path="/rooms" element={<RoomSelection />} />
+          <Route
+            path="/rooms"
+            element={
+              <ProtectedRoute>
+                <RoomSelection />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Room Detail */}
-          <Route path="/room/:id" element={<RoomDetail />} />
+          <Route
+            path="/room/:id"
+            element={
+              <ProtectedRoute>
+                <RoomDetail />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Profile */}
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Notifications */}
-          <Route path="/notifications" element={<Notifications />} />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Admin Dashboard */}
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Payment */}
-          <Route path="/payment" element={<Payment />} />
+          {/* Admin protected page */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* 404 fallback */}
+          {/* Fallback */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
         </Routes>
       </Router>
@@ -52,4 +144,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; //working

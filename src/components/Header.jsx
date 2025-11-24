@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/authcontext'; // Import useAuth
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const auth = useAuth(); // Get auth context
   const [open, setOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
+  
   // Hide header on auth pages where you don't want a header displayed
   const hideOn = ['/login', '/signup'];
   if (hideOn.includes(location.pathname)) return null;
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      setOpen(false);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <header className="bg-[#071E26] border-b border-[#06303a] z-50">
@@ -54,7 +68,8 @@ const Header = () => {
               </svg>
               <span>Profile</span>
             </button>
-            <button onClick={() => navigate('/login')} className="flex items-center gap-2 text-sm px-3 py-1 rounded text-red-400 hover:text-red-300">
+            {/* Updated Logout button */}
+            <button onClick={handleLogout} className="flex items-center gap-2 text-sm px-3 py-1 rounded text-red-400 hover:text-red-300">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7" />
               </svg>
@@ -112,7 +127,8 @@ const Header = () => {
               </svg>
               <span>Profile</span>
             </button>
-            <button onClick={() => { setOpen(false); navigate('/login'); }} className="w-full text-left px-3 py-2 rounded flex items-center gap-2 text-red-400 hover:bg-white/5">
+            {/* Updated mobile logout button */}
+            <button onClick={() => { setOpen(false); handleLogout(); }} className="w-full text-left px-3 py-2 rounded flex items-center gap-2 text-red-400 hover:bg-white/5">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7" />
               </svg>

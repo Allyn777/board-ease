@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
@@ -15,45 +14,26 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [userRole, setUserRole] = useState('user')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
 
-  // Simple function to get or create user profile
-  const ensureUserProfile = async (userId) => {
+  // Simplified function to get user profile role
+  const getUserRole = async (userId) => {
     try {
-      // Check if profile exists
-      const { data: existingProfile, error: checkError } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)
         .single()
 
-      if (checkError) {
-        // Profile doesn't exist, create one
-        console.log('Creating new profile for user:', userId)
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert([
-            { 
-              id: userId, 
-              role: 'user',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }
-          ])
-          .select()
-          .single()
-
-        if (createError) {
-          console.error('Error creating profile:', createError)
-          return 'user'
-        }
-        
-        return newProfile?.role || 'user'
+      if (error || !profile) {
+        console.error('Error fetching profile:', error)
+        return 'user'
       }
 
-      return existingProfile?.role || 'user'
+      return profile.role || 'user'
     } catch (error) {
-      console.error('Error in ensureUserProfile:', error)
+      console.error('Error in getUserRole:', error)
       return 'user'
     }
   }
@@ -66,12 +46,10 @@ export const AuthProvider = ({ children }) => {
         
         if (error) {
           console.error('Session error:', error)
-          setLoading(false)
-          return
-        }
-
-        if (session?.user) {
-          const role = await ensureUserProfile(session.user.id)
+          setUser(null)
+          setUserRole('user')
+        } else if (session?.user) {
+          const role = await getUserRole(session.user.id)
           setUser(session.user)
           setUserRole(role)
           console.log('User logged in:', session.user.email, 'Role:', role)
@@ -81,8 +59,10 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Error in getInitialSession:', error)
+        setUser(null)
+        setUserRole('user')
       } finally {
-        setLoading(false)
+        setAuthChecked(true)
       }
     }
 
@@ -94,7 +74,7 @@ export const AuthProvider = ({ children }) => {
         console.log('Auth state changed:', event)
         
         if (session?.user) {
-          const role = await ensureUserProfile(session.user.id)
+          const role = await getUserRole(session.user.id)
           setUser(session.user)
           setUserRole(role)
           console.log('User state updated:', session.user.email, 'Role:', role)
@@ -102,26 +82,56 @@ export const AuthProvider = ({ children }) => {
           setUser(null)
           setUserRole('user')
         }
-        setLoading(false)
+        
+        setAuthChecked(true)
       }
     )
 
     return () => subscription.unsubscribe()
   }, [])
 
-  // Sign Up
+  // Sign Up - Create user profile with 'user' role
   const signUp = async (email, password) => {
     try {
       console.log('Signing up user:', email)
       const cleanEmail = email.trim()
+      
+      // Create auth user
       const { data, error } = await supabase.auth.signUp({
         email: cleanEmail,
         password,
+        options: {
+          emailRedirectTo: undefined,
+        }
       })
       
       if (error) {
         console.error('Signup error:', error)
         throw error
+      }
+      
+      // IMPORTANT: Use upsert to ensure profile is created with 'user' role
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert(
+            {
+              id: data.user.id,
+              role: 'user',  // UI signups are ALWAYS regular users
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            },
+            { 
+              onConflict: 'id',
+              ignoreDuplicates: false  // Always update if exists
+            }
+          )
+        
+        if (profileError) {
+          console.error('Profile creation error:', profileError)
+        } else {
+          console.log('✅ User profile created with role: user')
+        }
       }
       
       console.log('Signup successful, user created:', data.user?.id)
@@ -155,13 +165,23 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Sign Out
+  // Sign Out - Immediately update state for instant feedback
   const signOut = async () => {
     try {
-      await supabase.auth.signOut()
+      // Update state FIRST for instant UI feedback
+      setUser(null)
       setUserRole('user')
+      
+      // Then call Supabase signOut
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      
+      console.log('User signed out successfully')
     } catch (error) {
       console.error('Error signing out:', error)
+      // Even if there's an error, keep the state cleared
+      setUser(null)
+      setUserRole('user')
     }
   }
 
@@ -184,6 +204,7 @@ export const AuthProvider = ({ children }) => {
     user,
     userRole,
     loading,
+    authChecked,
     signUp,
     signIn,
     signOut,
@@ -192,8 +213,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {children}  {/* ← Always render children! */}
+      {children}
     </AuthContext.Provider>
   )
 }
-export default AuthContext

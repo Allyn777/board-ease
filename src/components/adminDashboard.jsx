@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useAuth } from '../contexts/authcontext'; // Add this import
+import { useNavigate } from 'react-router-dom'; // Add this import
 
 const navigation = [
   { id: "dashboard", label: "Dashboard" },
@@ -139,6 +141,16 @@ const AdminDashboard = () => {
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  
+  // Add these lines
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
+
+  // Add this logout handler function
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login'); // Adjust the path to your login route
+  };
 
   return (
     <div className="min-h-screen bg-[#F4F7FB] text-gray-900">
@@ -152,9 +164,11 @@ const AdminDashboard = () => {
           </div>
           <div className="flex items-center gap-4">
             <p className="text-sm sm:text-base">
-              Welcome,<span className="font-semibold ml-1">Admin</span>
+              Welcome,<span className="font-semibold ml-1">{user?.email || 'Admin'}</span>
             </p>
-            <button className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold shadow hover:bg-red-600 transition-colors">
+            <button 
+              onClick={handleLogout}
+              className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold shadow hover:bg-red-600 transition-colors">
               Logout
             </button>
           </div>
@@ -684,4 +698,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-

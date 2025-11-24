@@ -34,6 +34,9 @@ const Signup = () => {
           const message = res.error?.message || (res.error && JSON.stringify(res.error)) || String(res.error)
           setErrors({ general: message })
         } else {
+        // Sign out immediately after signup to prevent auto-redirect to dashboard
+        await auth.signOut()
+        
         // if pending confirmation, show message
         if (res.data?.pending) {
           setSuccessMessage('Account created. Please check your email to confirm.')
