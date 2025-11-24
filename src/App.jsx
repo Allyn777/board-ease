@@ -9,7 +9,7 @@ import Profile from "./components/profile";
 import AdminDashboard from "./components/adminDashboard";
 import Notifications from "./components/notifications";
 import Payment from "./components/payment";
-import { AuthProvider } from "./contexts/AuthContext"; // ✅ already correct
+import { AuthProvider } from "./contexts/authcontext";
 
 function App() {
   return (
