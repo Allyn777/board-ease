@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from './Header';
+import Footer from './footer';
 
 const RoomSelection = () => {
   const navigate = useNavigate();
@@ -321,11 +322,7 @@ const RoomSelection = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-8 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-sm md:text-base">© 2024 Board Ease. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

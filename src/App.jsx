@@ -8,6 +8,7 @@ import RoomDetail from "./components/roomDetail";
 import Profile from "./components/profile";
 import AdminDashboard from "./components/adminDashboard";
 import Notifications from "./components/notifications";
+import Payment from "./components/payment";
 import { AuthProvider } from "./contexts/AuthContext"; // ✅ already correct
 
 function App() {
@@ -39,6 +40,9 @@ function App() {
 
           {/* Admin Dashboard */}
           <Route path="/admin" element={<AdminDashboard />} />
+
+          {/* Payment */}
+          <Route path="/payment" element={<Payment />} />
 
           {/* 404 fallback */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
