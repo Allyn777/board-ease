@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/authcontext";
 import { supabase, uploadRoomImages, deleteRoomImage } from "../../lib/supabaseClient";
-
 const ManagementTable = ({
   columns,
   rows,
