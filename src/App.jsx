@@ -6,7 +6,7 @@ import Home from "./components/home";
 import RoomSelection from "./components/roomSelection";
 import RoomDetail from "./components/roomDetail";
 import Profile from "./components/profile";
-import AdminDashboard from "./components/adminDashboard";
+import AdminRoutes from "./components/admin"; // ✅ NEW
 import Notifications from "./components/notifications";
 import Payment from "./components/payment";
 import { AuthProvider, useAuth } from "./contexts/authcontext";
@@ -128,14 +128,13 @@ function App() {
 
           {/* Admin protected page */}
           <Route
-            path="/admin"
-            element={
-              <ProtectedRoute requireAdmin={true}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-
+            path="/admin/*"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminRoutes />
+                </ProtectedRoute>
+                                                   }
+                />
           {/* Fallback */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
         </Routes>

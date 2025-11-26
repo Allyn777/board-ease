@@ -221,8 +221,8 @@ const RoomSelection = () => {
                   >
                     <option value="">All Terms</option>
                     <option value="One Month">One Month</option>
-                    <option value="Three Months">Two Months</option>
-                    <option value="Six Months">Three Months</option>
+                    <option value="Two Months">Two Months</option>
+                    <option value="Three Months">Three Months</option>
                     <option value="One Year">One Year</option>
                   </select>
                   <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
@@ -244,7 +244,7 @@ const RoomSelection = () => {
                     className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-10 bg-white text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-[#061A25] focus:border-transparent cursor-pointer"
                   >
                     <option value="">All Capacities</option>
-                    <option value="One Person">One Person</option>
+                    <option value="Single Person">One Person</option>
                     <option value="Two People">Two People</option>
                     <option value="Three People">Three People</option>
                     <option value="Four+ People">Four+ People</option>
@@ -368,7 +368,7 @@ const RoomSelection = () => {
                         </div>
                       </div>
                       <div className="p-4">
-                        <h3 className="text-lg font-bold text-gray-900 mb-1">Room {room.room_number}</h3>
+                        <h3 className="text-lg font-bold text-gray-900 mb-1"> {room.room_number}</h3>
                         <p className="text-sm text-gray-600 mb-3">{room.capacity} • {room.rental_term}</p>
                         <button 
                           onClick={() => handleInterested(room.id)}

@@ -131,7 +131,7 @@ const RoomDetail = () => {
       if (error) throw error;
 
       alert('Booking request submitted successfully! Please wait for admin approval.');
-      navigate('/room-selection');
+      navigate('/rooms');
     } catch (error) {
       console.error('Error submitting booking:', error);
       alert('Error submitting booking: ' + error.message);
