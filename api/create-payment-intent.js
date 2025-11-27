@@ -1,7 +1,7 @@
 // api/create-payment-intent.js
 // Vercel Serverless Function for Stripe Payments
 
-import Stripe from 'stripe';
+const Stripe = require('stripe');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
