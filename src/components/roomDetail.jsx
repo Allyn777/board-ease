@@ -174,7 +174,7 @@ const RoomDetail = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                     {room.room_number}
+                     Room {room.room_number}
                   </h1>
                   <div className="flex flex-wrap gap-3 text-sm">
                     <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">
