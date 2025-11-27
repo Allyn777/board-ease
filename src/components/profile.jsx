@@ -215,33 +215,33 @@ const Profile = () => {
     const bookingData = {
         'Payment': bookings.filter(b => b.status === 'Approved').map(b => ({
             id: b.id,
-            name: ` ${b.rooms?.room_number}`,
+            name: `Room ${b.rooms?.room_number}`,
             status: 'AWAITING PAYMENT',
             price: b.rooms?.price_monthly
         })),
         'Room Status': bookings.map(b => ({
             id: b.id,
-            name: ` ${b.rooms?.room_number}`,
+            name: `Room ${b.rooms?.room_number}`,
             status: b.status.toUpperCase(),
             message: b.message
         })),
         'Ongoing Rent': tenancies.filter(t => t.status === 'Active').map(t => ({
             id: t.id,
-            name: ` ${t.rooms?.room_number}`,
+            name: `Room ${t.rooms?.room_number}`,
             status: `START: ${new Date(t.rent_start).toLocaleDateString()} | END: ${new Date(t.rent_due).toLocaleDateString()}`,
             startDate: t.rent_start,
             endDate: t.rent_due
         })),
         'Rent History': tenancies.filter(t => t.status === 'Inactive').map(t => ({
             id: t.id,
-            name: ` ${t.rooms?.room_number}`,
+            name: `Room ${t.rooms?.room_number}`,
             status: 'COMPLETED',
             startDate: t.rent_start,
             endDate: t.rent_due
         })),
         'Payment History': payments.map(p => ({
             id: p.id,
-            name: ` ${p.rooms?.room_number}`,
+            name: `Room ${p.rooms?.room_number}`,
             status: p.payment_status.toUpperCase(),
             amount: p.amount,
             date: p.payment_date

@@ -199,7 +199,7 @@ export default function Rooms() {
             emptyLabel="No rooms added yet. Click 'Add New Room' to get started!"
             renderRow={(room) => (
               <div key={room.id} className="grid grid-cols-5 px-4 py-3 text-sm text-gray-800 border-t border-gray-100">
-                <span className="font-semibold">{room.room_number}</span>
+                <span className="font-semibold">Room {room.room_number}</span>
                 <span>{room.capacity}</span>
                 <span className="font-semibold text-green-600">₱{room.price_monthly.toLocaleString()}</span>
 

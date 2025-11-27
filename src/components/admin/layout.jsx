@@ -58,7 +58,7 @@ export default function Layout({ children }) {
       <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
 
       {/* FOOTER */}
-      <footer className="bg-[#051A2C] py-6 text-center text-sm text-white/80">
+      <footer className="bg-[#051A2C] py-6 text-center text-sm text-white/100">
         © {new Date().getFullYear()} Board Ease. All rights reserved.
       </footer>
     </div>

@@ -368,7 +368,7 @@ const RoomSelection = () => {
                         </div>
                       </div>
                       <div className="p-4">
-                        <h3 className="text-lg font-bold text-gray-900 mb-1"> {room.room_number}</h3>
+                        <h3 className="text-lg font-bold text-gray-900 mb-1">Room {room.room_number}</h3>
                         <p className="text-sm text-gray-600 mb-3">{room.capacity} • {room.rental_term}</p>
                         <button 
                           onClick={() => handleInterested(room.id)}

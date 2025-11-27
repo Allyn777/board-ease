@@ -300,7 +300,7 @@ export default function Tenants() {
               key={tenant.id}
               className="grid grid-cols-5 px-4 py-3 text-sm text-gray-800 border-t border-gray-100"
             >
-              <span className="font-semibold">{tenant.rooms?.room_number || 'N/A'}</span>
+              <span className="font-semibold">Room {tenant.rooms?.room_number || 'N/A'}</span>
               <span>{tenant.tenant_name}</span>
               <span>{new Date(tenant.rent_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               <span>{new Date(tenant.rent_due).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
@@ -357,9 +357,9 @@ export default function Tenants() {
               <div>
                 <label className="text-sm font-semibold text-gray-700">Reminders</label>
                 <select className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none">
-                  <option>Due Date or 3 Days Before Due Date</option>
                   <option>Due Date</option>
-                  <option>3 Days Before</option>
+                  <option>Three Days Due date</option>
+                  <option>Seven Days Due date</option>
                 </select>
               </div>
 
