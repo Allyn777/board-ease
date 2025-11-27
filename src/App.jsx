@@ -8,7 +8,7 @@ import RoomDetail from "./components/roomDetail";
 import Profile from "./components/profile";
 import AdminRoutes from "./components/admin";
 import Notifications from "./components/notifications";
-import Payment from "./components/payment";
+import { Payment } from "./components/payment";
 import { AuthProvider, useAuth } from "./contexts/authcontext";
 
 // 🔥 Loading Screen Component
