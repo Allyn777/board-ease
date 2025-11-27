@@ -39,30 +39,40 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    let mounted = true
+
     // Get initial session
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
         
+        if (!mounted) return
+
         if (error) {
           console.error('Session error:', error)
           setUser(null)
           setUserRole('user')
         } else if (session?.user) {
           const role = await getUserRole(session.user.id)
-          setUser(session.user)
-          setUserRole(role)
-          console.log('User logged in:', session.user.email, 'Role:', role)
+          if (mounted) {
+            setUser(session.user)
+            setUserRole(role)
+            console.log('User logged in:', session.user.email, 'Role:', role)
+          }
         } else {
           setUser(null)
           setUserRole('user')
         }
       } catch (error) {
         console.error('Error in getInitialSession:', error)
-        setUser(null)
-        setUserRole('user')
+        if (mounted) {
+          setUser(null)
+          setUserRole('user')
+        }
       } finally {
-        setAuthChecked(true)
+        if (mounted) {
+          setAuthChecked(true)
+        }
       }
     }
 
@@ -71,28 +81,40 @@ export const AuthProvider = ({ children }) => {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!mounted) return
+
         console.log('Auth state changed:', event)
         
         if (session?.user) {
           const role = await getUserRole(session.user.id)
-          setUser(session.user)
-          setUserRole(role)
-          console.log('User state updated:', session.user.email, 'Role:', role)
+          if (mounted) {
+            setUser(session.user)
+            setUserRole(role)
+            console.log('User state updated:', session.user.email, 'Role:', role)
+          }
         } else {
-          setUser(null)
-          setUserRole('user')
+          if (mounted) {
+            setUser(null)
+            setUserRole('user')
+          }
         }
         
-        setAuthChecked(true)
+        if (mounted) {
+          setAuthChecked(true)
+        }
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   // Sign Up - Create user profile with 'user' role
   const signUp = async (email, password) => {
     try {
+      setLoading(true)
       console.log('Signing up user:', email)
       const cleanEmail = email.trim()
       
@@ -139,12 +161,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Sign up error:', error)
       return { data: null, error }
+    } finally {
+      setLoading(false)
     }
   }
 
   // Sign In
   const signIn = async (email, password) => {
     try {
+      setLoading(true)
       console.log('Signing in user:', email)
       const cleanEmail = email.trim()
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -162,12 +187,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Sign in error:', error)
       return { data: null, error }
+    } finally {
+      setLoading(false)
     }
   }
 
   // Sign Out - Immediately update state for instant feedback
   const signOut = async () => {
     try {
+      setLoading(true)
       // Update state FIRST for instant UI feedback
       setUser(null)
       setUserRole('user')
@@ -182,12 +210,15 @@ export const AuthProvider = ({ children }) => {
       // Even if there's an error, keep the state cleared
       setUser(null)
       setUserRole('user')
+    } finally {
+      setLoading(false)
     }
   }
 
   // Reset Password
   const resetPassword = async (email) => {
     try {
+      setLoading(true)
       const cleanEmail = email.trim()
       const { data, error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
         redirectTo: `${window.location.origin}/reset-password`,
@@ -197,6 +228,8 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Reset password error:', error)
       return { data: null, error }
+    } finally {
+      setLoading(false)
     }
   }
 
