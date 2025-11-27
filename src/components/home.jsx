@@ -106,25 +106,25 @@ const Home = () => {
     {
       id: 1,
       title: "Room 1",
-      image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&auto=format&fit=crop&q=80",
+      image: "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Um9vbXN8ZW58MHx8MHx8fDA%3D",
       price: "$120/night"
     },
     {
       id: 2,
       title: "Room 2",
-      image: "https://media.istockphoto.com/id/1133953738/photo/view-of-white-living-room-in-minimal-style-with-furniture-on-bright-laminate-floor-interior.jpg?s=612x612&w=0&k=20&c=teuiUTmhsD5MlkX4h3FmBarYQR3nfpQ02Qp-5qi7JOo=",
+      image: "https://images.unsplash.com/photo-1565182999561-18d7dc61c393?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fFJvb21zfGVufDB8fDB8fHww",
       price: "$150/night"
     },
     {
       id: 3,
       title: "Room 3",
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&auto=format&fit=crop&q=80",
+      image: "https://media.istockphoto.com/id/1001130682/photo/modern-bright-skandinavian-interior-design-living-room.webp?a=1&s=612x612&w=0&k=20&c=JUJmmEJXkflO-Q3fP4hS0xKBj6qZHZx0Gtfu18LhhJA=",
       price: "$180/night"
     },
     {
       id: 4,
       title: "Room 4",
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&auto=format&fit=crop&q=80",
+      image: "https://plus.unsplash.com/premium_photo-1661964000526-1bf2d91bd451?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8",
       price: "$200/night"
     }
   ];
@@ -248,42 +248,169 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featuredd Rooms Section */}
-      <section className="bg-white py-12 px-4 sm:px-6 lg:px-8">
+      {/* Featured Rooms Section */}
+      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <div className="bg-[#061A25] text-white px-6 py-4 rounded-t-lg mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold">Featured Rooms</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Featured Rooms
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+              Discover our carefully selected rooms designed for comfort and convenience. 
+              Each space offers modern amenities and a welcoming atmosphere.
+            </p>
           </div>
 
-          <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-              {availableRooms.map((room) => (
-                <div
-                  key={room.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer group"
-                >
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={room.image}
-                      alt={room.title}
-                      className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute top-4 right-4 bg-[#061A25] text-white px-3 py-1 rounded-lg text-sm font-semibold">
-                      {room.price}
-                    </div>
+          {/* Rooms Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {availableRooms.map((room) => (
+              <div
+                key={room.id}
+                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+              >
+                {/* Image Container */}
+                <div className="relative overflow-hidden aspect-[4/3]">
+                  <img
+                    src={room.image}
+                    alt="Featured room"
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                  {/* Subtle Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* About Us Section */}
+      <section className="bg-gradient-to-b from-white to-gray-50 py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              About Board Ease
+            </h2>
+            <div className="w-24 h-1 bg-[#061A25] mx-auto mb-6"></div>
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              Your trusted partner in finding the perfect boarding house with seamless payment solutions
+            </p>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            {/* Left Side - Image */}
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop&q=80"
+                  alt="About Board Ease"
+                  className="w-full h-[400px] object-cover"
+                />
+              </div>
+              {/* Floating Card */}
+              <div className="absolute -bottom-6 -right-6 bg-[#061A25] text-white p-6 rounded-xl shadow-xl max-w-xs">
+                <p className="text-3xl font-bold mb-2">100+</p>
+                <p className="text-sm">Happy Tenants</p>
+              </div>
+            </div>
+
+            {/* Right Side - Content */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Simplifying Boarding House Management
+              </h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Board Ease was created to bridge the gap between landlords and tenants, providing a modern platform 
+                that makes finding, booking, and managing boarding house stays easier than ever before.
+              </p>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                With our integrated payment system, you can focus on what matters most - creating a comfortable 
+                home away from home. We handle the complexity of payments, bookings, and communication so you don't have to.
+              </p>
+              
+              {/* Key Features */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#061A25] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{room.title}</h3>
-                    <button 
-                      onClick={() => navigate(`/room/${room.id}`)}
-                      className="w-full bg-[#061A25] hover:bg-[#0a2535] text-white py-2 px-4 rounded-lg font-medium transition-colors"
-                    >
-                      View Details
-                    </button>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Secure Online Payments</h4>
+                    <p className="text-sm text-gray-600">All transactions are encrypted and processed through trusted payment gateways</p>
                   </div>
                 </div>
-              ))}
+                
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#061A25] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">24/7 Support</h4>
+                    <p className="text-sm text-gray-600">Our dedicated team is always ready to assist you with any questions or concerns</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#061A25] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Easy Management</h4>
+                    <p className="text-sm text-gray-600">Intuitive dashboard for landlords and tenants to manage everything in one place</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white rounded-2xl shadow-lg p-8">
+            <div className="text-center">
+              <p className="text-4xl font-bold text-[#061A25] mb-2">50+</p>
+              <p className="text-gray-600 text-sm">Properties Listed</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-bold text-[#061A25] mb-2">100+</p>
+              <p className="text-gray-600 text-sm">Happy Tenants</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-bold text-[#061A25] mb-2">24/7</p>
+              <p className="text-gray-600 text-sm">Support Available</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-bold text-[#061A25] mb-2">99%</p>
+              <p className="text-gray-600 text-sm">Satisfaction Rate</p>
+            </div>
+          </div>
+
+          {/* Mission & Vision */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
+            <div className="bg-white p-8 rounded-2xl shadow-lg">
+              <div className="text-4xl mb-4">🎯</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Our Mission</h3>
+              <p className="text-gray-600 leading-relaxed">
+                To revolutionize the boarding house industry by providing a seamless, secure, and user-friendly 
+                platform that connects landlords with tenants while simplifying payment processes and property management.
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-2xl shadow-lg">
+              <div className="text-4xl mb-4">👁️</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Our Vision</h3>
+              <p className="text-gray-600 leading-relaxed">
+                To become the leading boarding house management platform in the Philippines, known for innovation, 
+                reliability, and exceptional service that makes finding and managing accommodations effortless for everyone.
+              </p>
             </div>
           </div>
         </div>
