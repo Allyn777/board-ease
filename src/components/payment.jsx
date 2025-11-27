@@ -250,8 +250,8 @@ const BookingConfirmation = ({ onConfirmPayment, confirming }) => (
     </button>
   </div>
 );
+function Payment() {
 
-const Payment = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // booking ID from URL
   const { user } = useAuth();
@@ -435,5 +435,6 @@ const Payment = () => {
 };
 
 export default Payment;
+export { Payment };
 
 //test payment
