@@ -1,4 +1,4 @@
-i// api/create-payment-intent.js
+// api/create-payment-intent.js
 // Vercel Serverless Function for Stripe Payments
 
 import Stripe from 'stripe';
