@@ -118,7 +118,7 @@ function App() {
           />
 
           <Route
-            path="/payment"
+            path="/payment/:id"
             element={
               <ProtectedRoute>
                 <Payment />
