@@ -6,15 +6,18 @@ export default function Tenants() {
   const { user } = useAuth();
   const [tenants, setTenants] = useState([]);
   const [bookingRequests, setBookingRequests] = useState([]);
+  const [cancelledBookings, setCancelledBookings] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedTenant, setSelectedTenant] = useState('');
   const [loading, setLoading] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
+  const [showCancelled, setShowCancelled] = useState(false);
 
   useEffect(() => {
     fetchTenants();
     fetchBookingRequests();
+    fetchCancelledBookings();
   }, []);
 
   const fetchTenants = async () => {
@@ -66,6 +69,37 @@ export default function Tenants() {
     }
   };
 
+  const fetchCancelledBookings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('booking_requests')
+        .select('*, rooms(room_number, price_monthly)')
+        .eq('status', 'Cancelled')
+        .order('decided_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const cancelledWithProfiles = await Promise.all(
+        (data || []).map(async (request) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, phone')
+            .eq('id', request.requestor)
+            .single();
+          
+          return {
+            ...request,
+            profiles: profile || { full_name: 'Unknown User', phone: 'N/A' }
+          };
+        })
+      );
+      
+      setCancelledBookings(cancelledWithProfiles);
+    } catch (error) {
+      console.error('Error fetching cancelled bookings:', error);
+    }
+  };
+
   const handleSendReminder = async (e) => {
     e.preventDefault();
     
@@ -80,7 +114,6 @@ export default function Tenants() {
     try {
       setLoading(true);
 
-      // Find the selected tenant
       const tenant = tenants.find(t => t.id === parseInt(selectedTenant));
       
       if (!tenant) {
@@ -88,7 +121,6 @@ export default function Tenants() {
         return;
       }
 
-      // Send notification to the tenant
       const { error } = await supabase
         .from('notifications')
         .insert([{
@@ -203,7 +235,6 @@ export default function Tenants() {
     try {
       setLoading(true);
 
-      // Update tenant status to Inactive
       const { error: tenantError } = await supabase
         .from('tenants')
         .update({ status: 'Inactive' })
@@ -211,7 +242,6 @@ export default function Tenants() {
 
       if (tenantError) throw tenantError;
 
-      // Update room status back to Available
       const { error: roomError } = await supabase
         .from('rooms')
         .update({ status: 'Available' })
@@ -219,7 +249,6 @@ export default function Tenants() {
 
       if (roomError) throw roomError;
 
-      // Send notification
       await supabase
         .from('notifications')
         .insert([{
@@ -255,7 +284,7 @@ export default function Tenants() {
             Tenants Management
           </h2>
           <p className="text-sm text-gray-600 mt-1">
-            Active: {activeTenants.length} | Pending Bookings: {pendingBookings}
+            Active: {activeTenants.length} | Pending: {pendingBookings} | Cancelled: {cancelledBookings.length}
           </p>
         </div>
 
@@ -272,6 +301,13 @@ export default function Tenants() {
             className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white shadow hover:bg-gray-900"
           >
             Accept Booking ({pendingBookings})
+          </button>
+
+          <button 
+            onClick={() => setShowCancelled(true)}
+            className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
+          >
+            View Cancelled ({cancelledBookings.length})
           </button>
         </div>
       </div>
@@ -484,7 +520,7 @@ export default function Tenants() {
                       <textarea
                         name="message"
                         rows={4}
-                        defaultValue="This is from BoardEase. Please pay first before confirmation."
+                        defaultValue="This is from BoardEase. Please pay after booking confirmation."
                         className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
                       />
                     </div>
@@ -512,6 +548,53 @@ export default function Tenants() {
                   </>
                 )}
               </form>
+            )}
+          </div>
+        )}
+
+        {/* View Cancelled Bookings */}
+        {showCancelled && (
+          <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200 lg:col-span-2">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+              <h3 className="text-2xl font-bold text-gray-900">Cancelled Bookings</h3>
+              <button 
+                onClick={() => setShowCancelled(false)}
+                className="text-sm font-semibold text-gray-500 hover:text-black"
+              >
+                Close
+              </button>
+            </div>
+
+            {cancelledBookings.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No cancelled bookings
+              </div>
+            ) : (
+              <div className="mt-6 space-y-3">
+                {cancelledBookings.map((booking) => (
+                  <div key={booking.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {booking.profiles?.full_name || 'Unknown'} - Room {booking.rooms?.room_number}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Phone: {booking.profiles?.phone || 'N/A'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Price: ₱{booking.rooms?.price_monthly?.toLocaleString()}/mo
+                        </p>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Cancelled: {new Date(booking.decided_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
+                        CANCELLED
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}

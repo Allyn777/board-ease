@@ -144,13 +144,11 @@ const Profile = () => {
             const fileExt = file.name.split('.').pop();
             const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
-            // Delete old avatar if exists
             if (profileImage) {
                 const oldFileName = profileImage.split('/').pop();
                 await supabase.storage.from('avatars').remove([`${user.id}/${oldFileName}`]);
             }
 
-            // Upload new avatar
             const { data: uploadData, error: uploadError } = await supabase.storage
                 .from('avatars')
                 .upload(fileName, file);
@@ -161,7 +159,6 @@ const Profile = () => {
                 .from('avatars')
                 .getPublicUrl(fileName);
 
-            // Update profile with new avatar URL
             const { error: updateError } = await supabase
                 .from('profiles')
                 .upsert({
@@ -211,14 +208,64 @@ const Profile = () => {
 
     const tabs = ['Payment', 'Room Status', 'Ongoing Rent', 'Rent History', 'Payment History'];
 
+    // ✅ FIXED: Check which bookings have been paid
+    const getPaidBookingIds = () => {
+        return payments
+            .filter(p => p.payment_status === 'Paid')
+            .map(p => {
+                const booking = bookings.find(b => b.room_id === p.room_id && b.status === 'Approved');
+                return booking?.id;
+            })
+            .filter(Boolean);
+    };
+
+    const paidBookingIds = getPaidBookingIds();
+
+    // ✅ Handle Cancel Booking - Room stays available
+    const handleCancelBooking = async (bookingId) => {
+        if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+        try {
+            // Get booking info first
+            const { data: booking } = await supabase
+                .from('booking_requests')
+                .select('room_id')
+                .eq('id', bookingId)
+                .single();
+
+            // Update booking status to Cancelled
+            const { error } = await supabase
+                .from('booking_requests')
+                .update({ 
+                    status: 'Cancelled',
+                    decided_at: new Date().toISOString()
+                })
+                .eq('id', bookingId);
+
+            if (error) throw error;
+
+            // Room stays Available (don't change room status)
+            // This way it appears in room selection
+
+            alert('Booking cancelled successfully!');
+            fetchBookings(); // Refresh the bookings list
+        } catch (error) {
+            console.error('Error cancelling booking:', error);
+            alert('Error cancelling booking: ' + error.message);
+        }
+    };
+
     // Organize booking data by tab
     const bookingData = {
-        'Payment': bookings.filter(b => b.status === 'Approved').map(b => ({
-            id: b.id,
-            name: `Room ${b.rooms?.room_number}`,
-            status: 'AWAITING PAYMENT',
-            price: b.rooms?.price_monthly
-        })),
+        // ✅ FIXED: Filter out paid bookings
+        'Payment': bookings
+            .filter(b => b.status === 'Approved' && !paidBookingIds.includes(b.id))
+            .map(b => ({
+                id: b.id,
+                name: `Room ${b.rooms?.room_number}`,
+                status: 'AWAITING PAYMENT',
+                price: b.rooms?.price_monthly
+            })),
         'Room Status': bookings.map(b => ({
             id: b.id,
             name: `Room ${b.rooms?.room_number}`,
@@ -228,7 +275,7 @@ const Profile = () => {
         'Ongoing Rent': tenancies.filter(t => t.status === 'Active').map(t => ({
             id: t.id,
             name: `Room ${t.rooms?.room_number}`,
-            status: `START: ${new Date(t.rent_start).toLocaleDateString()} | END: ${new Date(t.rent_due).toLocaleDateString()}`,
+            status: 'ACTIVE',
             startDate: t.rent_start,
             endDate: t.rent_due
         })),
@@ -257,7 +304,7 @@ const Profile = () => {
                 actionButtons = (
                     <>
                         <ActionButton label="PAY NOW" onClick={() => navigate(`/payment/${item.id}`)} style="primary" />
-                        <ActionButton label="CANCEL" onClick={() => console.log('Cancel:', item.name)} style="secondary" />
+                        <ActionButton label="CANCEL" onClick={() => handleCancelBooking(item.id)} style="secondary" />
                     </>
                 );
                 statusColorClass = 'text-orange-600';
@@ -273,7 +320,9 @@ const Profile = () => {
                 break;
             case 'Ongoing Rent':
                 actionButtons = (
-                    <ActionButton label="VIEW" onClick={() => navigate(`/room/${item.id}`)} style="primary" />
+                    <button className="text-black text-sm font-medium hover:text-gray-700 transition-colors p-2">
+                        View Details
+                    </button>
                 );
                 statusColorClass = 'text-green-600';
                 break;
@@ -305,6 +354,16 @@ const Profile = () => {
                         {item.amount && (
                             <p className="text-sm text-gray-600 mt-1">
                                 Amount: ₱{item.amount.toLocaleString()}
+                            </p>
+                        )}
+                        {item.startDate && (
+                            <p className="text-sm text-gray-600 mt-1">
+                                Start: {new Date(item.startDate).toLocaleDateString()}
+                            </p>
+                        )}
+                        {item.endDate && (
+                            <p className="text-sm text-gray-600 mt-1">
+                                End: {new Date(item.endDate).toLocaleDateString()}
                             </p>
                         )}
                     </div>
