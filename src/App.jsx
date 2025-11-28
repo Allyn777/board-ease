@@ -10,6 +10,7 @@ import AdminRoutes from "./components/admin";
 import Notifications from "./components/notifications";
 import { Payment } from "./components/payment";
 import { AuthProvider, useAuth } from "./contexts/authcontext";
+import OfflineDetector from "./components/OfflineDetector";
 
 // 🔥 Loading Screen Component
 const LoadingScreen = () => (
@@ -43,7 +44,7 @@ const LoadingScreen = () => (
   </div>
 );
 
-// 🔥 FIXED Protected Route (Shows loading screen while checking auth)
+// 🔥 Protected Route (Shows loading screen while checking auth)
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, userRole, authChecked } = useAuth();
 
@@ -61,7 +62,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
   return children;
 };
 
-// 🔥 FIXED Public Route (Instant redirect if logged in, loading only if uncertain)
+// 🔥 Public Route (Instant redirect if logged in, loading only if uncertain)
 const PublicRoute = ({ children }) => {
   const { user, userRole, authChecked } = useAuth();
 
@@ -81,6 +82,9 @@ const PublicRoute = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
+      {/* 🔥 PWA Offline Detector */}
+      <OfflineDetector />
+      
       <Router>
         <Routes>
 
