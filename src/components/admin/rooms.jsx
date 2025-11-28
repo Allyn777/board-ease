@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/authcontext";
 import { supabase, uploadRoomImages, deleteRoomImage } from "../../lib/supabaseClient";
+
 const ManagementTable = ({
   columns,
   rows,
   renderRow,
   emptyLabel,
-  columnClass = "grid-cols-5",
 }) => (
   <div className="mt-4 rounded-xl border border-gray-200 overflow-hidden">
-    <div className={`grid ${columnClass} bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-700`}>
+    {/* Desktop Table Header */}
+    <div className="hidden md:grid md:grid-cols-5 bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-700">
       {columns.map((column) => (
         <span key={column}>{column}</span>
       ))}
     </div>
 
     {rows.length === 0 ? (
-      <div className="h-72 bg-gray-50 flex items-center justify-center text-gray-500" aria-label={emptyLabel}>
+      <div className="h-72 bg-gray-50 flex items-center justify-center text-gray-500 text-sm px-4 text-center" aria-label={emptyLabel}>
         {emptyLabel}
       </div>
     ) : (
@@ -167,21 +168,21 @@ export default function Rooms() {
   const occupiedRooms = rooms.filter((r) => r.status === "Occupied").length;
 
   return (
-    <section className="grid gap-6 lg:grid-cols-[1.3fr,0.7fr]">
+    <section className="grid gap-4 sm:gap-6 lg:grid-cols-[1.3fr,0.7fr]">
       {/* LEFT SIDE */}
-      <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+      <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-sm border border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-gray-200 pb-4">
           <div>
-            <p className="text-sm uppercase tracking-widest text-gray-500">Admin Room Management</p>
-            <h2 className="text-2xl font-bold text-gray-900">Room Management</h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-xs sm:text-sm uppercase tracking-widest text-gray-500">Admin Room Management</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Room Management</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">
               Total: {totalRooms} | Available: {availableRooms} | Occupied: {occupiedRooms}
             </p>
           </div>
 
           <button
             onClick={() => setShowAddRoom(true)}
-            className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white shadow hover:bg-gray-900"
+            className="rounded-md bg-black px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow hover:bg-gray-900 w-full sm:w-auto"
             disabled={loading}
           >
             Add New Room
@@ -190,7 +191,7 @@ export default function Rooms() {
 
         {loading && !showAddRoom ? (
           <div className="flex justify-center items-center h-64">
-            <div className="text-gray-500">Loading rooms...</div>
+            <div className="text-gray-500 text-sm">Loading rooms...</div>
           </div>
         ) : (
           <ManagementTable
@@ -198,30 +199,61 @@ export default function Rooms() {
             rows={rooms}
             emptyLabel="No rooms added yet. Click 'Add New Room' to get started!"
             renderRow={(room) => (
-              <div key={room.id} className="grid grid-cols-5 px-4 py-3 text-sm text-gray-800 border-t border-gray-100">
-                <span className="font-semibold">Room {room.room_number}</span>
-                <span>{room.capacity}</span>
-                <span className="font-semibold text-green-600">₱{room.price_monthly.toLocaleString()}</span>
-
-                <span
-                  className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
-                    room.status === "Available"
-                      ? "bg-green-100 text-green-700"
-                      : room.status === "Occupied"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {room.status}
-                </span>
-
-                <div className="flex gap-2 justify-end">
+              <div key={room.id}>
+                {/* Mobile Card View */}
+                <div className="md:hidden border-t border-gray-100 p-4 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-semibold text-gray-900">Room {room.room_number}</p>
+                      <p className="text-sm text-gray-600">{room.capacity}</p>
+                    </div>
+                    <span
+                      className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+                        room.status === "Available"
+                          ? "bg-green-100 text-green-700"
+                          : room.status === "Occupied"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {room.status}
+                    </span>
+                  </div>
+                  <p className="font-semibold text-green-600">₱{room.price_monthly.toLocaleString()}</p>
                   <button
                     onClick={() => handleDeleteRoom(room.id, room.image_urls)}
                     className="text-sm font-semibold text-red-600 hover:text-red-800"
                   >
                     Delete
                   </button>
+                </div>
+
+                {/* Desktop Table Row */}
+                <div className="hidden md:grid md:grid-cols-5 px-4 py-3 text-sm text-gray-800 border-t border-gray-100">
+                  <span className="font-semibold">Room {room.room_number}</span>
+                  <span>{room.capacity}</span>
+                  <span className="font-semibold text-green-600">₱{room.price_monthly.toLocaleString()}</span>
+
+                  <span
+                    className={`inline-block px-2 py-1 rounded text-xs font-semibold w-fit ${
+                      room.status === "Available"
+                        ? "bg-green-100 text-green-700"
+                        : room.status === "Occupied"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {room.status}
+                  </span>
+
+                  <div className="flex gap-2 justify-end">
+                    <button
+                      onClick={() => handleDeleteRoom(room.id, room.image_urls)}
+                      className="text-sm font-semibold text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -231,9 +263,9 @@ export default function Rooms() {
 
       {/* RIGHT SIDE - ADD FORM */}
       {showAddRoom && (
-        <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200 lg:sticky lg:top-8 h-fit">
+        <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-sm border border-gray-200 lg:sticky lg:top-8 h-fit">
           <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-            <h3 className="text-2xl font-bold text-gray-900">Add Room</h3>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Add Room</h3>
             <button
               onClick={() => setShowAddRoom(false)}
               className="text-sm font-semibold text-gray-500 hover:text-black"
@@ -243,9 +275,9 @@ export default function Rooms() {
             </button>
           </div>
 
-          <form onSubmit={handleCreateRoom} className="mt-6 space-y-4">
+          <form onSubmit={handleCreateRoom} className="mt-4 sm:mt-6 space-y-4">
             <div>
-              <label className="text-sm font-semibold text-gray-700">Room No. *</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-700">Room No. *</label>
               <input
                 type="text"
                 required
@@ -257,7 +289,7 @@ export default function Rooms() {
             </div>
 
             <div>
-              <label className="text-sm font-semibold text-gray-700">Capacity *</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-700">Capacity *</label>
               <select
                 required
                 value={roomForm.capacity}
@@ -272,7 +304,7 @@ export default function Rooms() {
             </div>
 
             <div>
-              <label className="text-sm font-semibold text-gray-700">Rental Term</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-700">Rental Term</label>
               <select
                 value={roomForm.rental_term}
                 onChange={(e) => setRoomForm({ ...roomForm, rental_term: e.target.value })}
@@ -286,7 +318,7 @@ export default function Rooms() {
             </div>
 
             <div>
-              <label className="text-sm font-semibold text-gray-700">Price (PHP) *</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-700">Price (PHP) *</label>
               <input
                 type="number"
                 required
@@ -300,7 +332,7 @@ export default function Rooms() {
             </div>
 
             <div>
-              <label className="text-sm font-semibold text-gray-700">Images (Max 5)</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-700">Images (Max 5)</label>
               <input
                 type="file"
                 multiple
@@ -316,7 +348,7 @@ export default function Rooms() {
             </div>
 
             <div>
-              <label className="text-sm font-semibold text-gray-700">Description</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-700">Description</label>
               <textarea
                 rows={4}
                 value={roomForm.description}
@@ -326,11 +358,11 @@ export default function Rooms() {
               />
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setShowAddRoom(false)}
-                className="text-sm font-semibold text-gray-500 hover:text-black"
+                className="text-sm font-semibold text-gray-500 hover:text-black order-2 sm:order-1"
                 disabled={loading}
               >
                 Cancel
@@ -339,7 +371,7 @@ export default function Rooms() {
               <button
                 type="submit"
                 disabled={loading || uploadingImages}
-                className="rounded-md bg-[#051A2C] px-6 py-2 text-sm font-semibold text-white shadow hover:bg-[#031121] disabled:opacity-50"
+                className="w-full sm:w-auto rounded-md bg-[#051A2C] px-6 py-2 text-sm font-semibold text-white shadow hover:bg-[#031121] disabled:opacity-50 order-1 sm:order-2"
               >
                 {uploadingImages ? "Uploading..." : loading ? "Creating..." : "Create Room"}
               </button>

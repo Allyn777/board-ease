@@ -158,7 +158,6 @@ export default function Tenants() {
       setLoading(true);
 
       if (approval === 'Approve') {
-        // Create tenant record
         const { error: tenantError } = await supabase
           .from('tenants')
           .insert([{
@@ -172,7 +171,6 @@ export default function Tenants() {
 
         if (tenantError) throw tenantError;
 
-        // Update room status to Occupied
         const { error: roomError } = await supabase
           .from('rooms')
           .update({ status: 'Occupied' })
@@ -180,7 +178,6 @@ export default function Tenants() {
 
         if (roomError) throw roomError;
 
-        // Send notification to user
         await supabase
           .from('notifications')
           .insert([{
@@ -191,7 +188,6 @@ export default function Tenants() {
             is_read: false
           }]);
       } else {
-        // Send decline notification
         await supabase
           .from('notifications')
           .insert([{
@@ -203,7 +199,6 @@ export default function Tenants() {
           }]);
       }
 
-      // Update booking request status
       const { error: bookingError } = await supabase
         .from('booking_requests')
         .update({ 
@@ -273,39 +268,39 @@ export default function Tenants() {
   const pendingBookings = bookingRequests.length;
 
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200">
+    <section className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-sm border border-gray-200">
       {/* HEADER */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4 border-b border-gray-200 pb-4">
         <div>
-          <p className="text-sm uppercase tracking-widest text-gray-500">
+          <p className="text-xs sm:text-sm uppercase tracking-widest text-gray-500">
             Admin Tenant Management
           </p>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
             Tenants Management
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">
             Active: {activeTenants.length} | Pending: {pendingBookings} | Cancelled: {cancelledBookings.length}
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           <button 
             onClick={() => setShowReminder(true)}
-            className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white shadow hover:bg-gray-900"
+            className="flex-1 sm:flex-none rounded-md bg-black px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow hover:bg-gray-900"
           >
             Remind Due Date
           </button>
 
           <button 
             onClick={() => setShowBooking(true)}
-            className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white shadow hover:bg-gray-900"
+            className="flex-1 sm:flex-none rounded-md bg-black px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow hover:bg-gray-900"
           >
             Accept Booking ({pendingBookings})
           </button>
 
           <button 
             onClick={() => setShowCancelled(true)}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
+            className="flex-1 sm:flex-none rounded-md bg-red-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow hover:bg-red-700"
           >
             View Cancelled ({cancelledBookings.length})
           </button>
@@ -314,7 +309,8 @@ export default function Tenants() {
 
       {/* TABLE */}
       <div className="mt-4 rounded-xl border border-gray-200 overflow-hidden">
-        <div className="grid grid-cols-5 bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-700">
+        {/* Desktop Table Header */}
+        <div className="hidden md:grid md:grid-cols-5 bg-gray-100 px-4 py-3 text-xs sm:text-sm font-semibold text-gray-700">
           <span>Room no.</span>
           <span>Tenant name</span>
           <span>Rent Start</span>
@@ -323,47 +319,71 @@ export default function Tenants() {
         </div>
 
         {loading ? (
-          <div className="px-4 py-8 text-center text-gray-500">
+          <div className="px-4 py-8 text-center text-gray-500 text-sm">
             Loading tenants...
           </div>
         ) : tenants.length === 0 ? (
-          <div className="px-4 py-8 text-center text-gray-500">
+          <div className="px-4 py-8 text-center text-gray-500 text-sm">
             No tenants yet. Approve booking requests to add tenants.
           </div>
         ) : (
           tenants.map((tenant) => (
-            <div 
-              key={tenant.id}
-              className="grid grid-cols-5 px-4 py-3 text-sm text-gray-800 border-t border-gray-100"
-            >
-              <span className="font-semibold">Room {tenant.rooms?.room_number || 'N/A'}</span>
-              <span>{tenant.tenant_name}</span>
-              <span>{new Date(tenant.rent_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-              <span>{new Date(tenant.rent_due).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-              <span className="text-right">
-                {tenant.status === 'Active' ? (
-                  <button 
-                    onClick={() => handleRemoveTenant(tenant.id, tenant.room_id, tenant.profile_id)}
-                    className="text-sm font-semibold text-red-600 hover:text-red-800"
-                  >
-                    Remove
-                  </button>
-                ) : (
-                  <span className="text-sm font-semibold text-gray-400">Inactive</span>
-                )}
-              </span>
+            <div key={tenant.id}>
+              {/* Mobile Card View */}
+              <div className="md:hidden border-t border-gray-100 p-4 space-y-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">Room {tenant.rooms?.room_number || 'N/A'}</p>
+                    <p className="text-sm text-gray-600">{tenant.tenant_name}</p>
+                  </div>
+                  {tenant.status === 'Active' ? (
+                    <button 
+                      onClick={() => handleRemoveTenant(tenant.id, tenant.room_id, tenant.profile_id)}
+                      className="text-xs font-semibold text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <span className="text-xs font-semibold text-gray-400">Inactive</span>
+                  )}
+                </div>
+                <div className="text-xs text-gray-600 space-y-1">
+                  <p><span className="font-medium">Start:</span> {new Date(tenant.rent_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                  <p><span className="font-medium">Due:</span> {new Date(tenant.rent_due).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                </div>
+              </div>
+
+              {/* Desktop Table Row */}
+              <div className="hidden md:grid md:grid-cols-5 px-4 py-3 text-xs sm:text-sm text-gray-800 border-t border-gray-100">
+                <span className="font-semibold">Room {tenant.rooms?.room_number || 'N/A'}</span>
+                <span>{tenant.tenant_name}</span>
+                <span>{new Date(tenant.rent_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span>{new Date(tenant.rent_due).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span className="text-right">
+                  {tenant.status === 'Active' ? (
+                    <button 
+                      onClick={() => handleRemoveTenant(tenant.id, tenant.room_id, tenant.profile_id)}
+                      className="text-xs sm:text-sm font-semibold text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <span className="text-xs sm:text-sm font-semibold text-gray-400">Inactive</span>
+                  )}
+                </span>
+              </div>
             </div>
           ))
         )}
       </div>
 
       {/* FORMS */}
-      <div className="grid gap-6 lg:grid-cols-2 mt-6">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2 mt-4 sm:mt-6">
         {/* Remind Due Date */}
         {showReminder && (
-          <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200">
+          <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-              <h3 className="text-2xl font-bold text-gray-900">Notif Users</h3>
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900">Notif Users</h3>
               <button 
                 onClick={() => setShowReminder(false)}
                 className="text-sm font-semibold text-gray-500 hover:text-black"
@@ -372,9 +392,9 @@ export default function Tenants() {
               </button>
             </div>
 
-            <form onSubmit={handleSendReminder} className="mt-6 space-y-4">
+            <form onSubmit={handleSendReminder} className="mt-4 sm:mt-6 space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700">Tenants *</label>
+                <label className="text-xs sm:text-sm font-semibold text-gray-700">Tenants *</label>
                 <select 
                   value={selectedTenant}
                   onChange={(e) => setSelectedTenant(e.target.value)}
@@ -391,7 +411,7 @@ export default function Tenants() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-700">Reminders</label>
+                <label className="text-xs sm:text-sm font-semibold text-gray-700">Reminders</label>
                 <select className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none">
                   <option>Due Date</option>
                   <option>Three Days Due date</option>
@@ -400,7 +420,7 @@ export default function Tenants() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-700">Message *</label>
+                <label className="text-xs sm:text-sm font-semibold text-gray-700">Message *</label>
                 <textarea
                   name="message"
                   rows={4}
@@ -410,11 +430,11 @@ export default function Tenants() {
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                 <button 
                   type="button"
                   onClick={() => setShowReminder(false)}
-                  className="text-sm font-semibold text-gray-500 hover:text-black"
+                  className="text-sm font-semibold text-gray-500 hover:text-black order-2 sm:order-1"
                   disabled={loading}
                 >
                   Cancel
@@ -422,7 +442,7 @@ export default function Tenants() {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="rounded-md bg-[#051A2C] px-6 py-2 text-sm font-semibold text-white shadow hover:bg-[#031121] disabled:opacity-50"
+                  className="w-full sm:w-auto rounded-md bg-[#051A2C] px-6 py-2 text-sm font-semibold text-white shadow hover:bg-[#031121] disabled:opacity-50 order-1 sm:order-2"
                 >
                   {loading ? 'Sending...' : 'Send'}
                 </button>
@@ -433,9 +453,9 @@ export default function Tenants() {
 
         {/* Accept Booking */}
         {showBooking && (
-          <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200">
+          <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-              <h3 className="text-2xl font-bold text-gray-900">Accept Booking</h3>
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900">Accept Booking</h3>
               <button 
                 onClick={() => {
                   setShowBooking(false);
@@ -448,13 +468,13 @@ export default function Tenants() {
             </div>
 
             {bookingRequests.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 text-sm">
                 No pending booking requests
               </div>
             ) : (
-              <form onSubmit={handleApproveBooking} className="mt-6 space-y-4">
+              <form onSubmit={handleApproveBooking} className="mt-4 sm:mt-6 space-y-4">
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">Requests *</label>
+                  <label className="text-xs sm:text-sm font-semibold text-gray-700">Requests *</label>
                   <select 
                     name="requestId"
                     onChange={(e) => {
@@ -475,7 +495,7 @@ export default function Tenants() {
 
                 {selectedRequest && (
                   <>
-                    <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+                    <div className="bg-gray-50 p-3 sm:p-4 rounded-lg space-y-2 text-xs sm:text-sm">
                       <p><strong>Tenant:</strong> {selectedRequest.profiles?.full_name}</p>
                       <p><strong>Phone:</strong> {selectedRequest.profiles?.phone}</p>
                       <p><strong>Room:</strong> {selectedRequest.rooms?.room_number}</p>
@@ -484,7 +504,7 @@ export default function Tenants() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Check-in Date *</label>
+                      <label className="text-xs sm:text-sm font-semibold text-gray-700">Check-in Date *</label>
                       <input
                         type="date"
                         name="checkIn"
@@ -494,7 +514,7 @@ export default function Tenants() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Check-out Date *</label>
+                      <label className="text-xs sm:text-sm font-semibold text-gray-700">Check-out Date *</label>
                       <input
                         type="date"
                         name="checkOut"
@@ -504,7 +524,7 @@ export default function Tenants() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Approval *</label>
+                      <label className="text-xs sm:text-sm font-semibold text-gray-700">Approval *</label>
                       <select 
                         name="approval"
                         className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
@@ -516,7 +536,7 @@ export default function Tenants() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Message</label>
+                      <label className="text-xs sm:text-sm font-semibold text-gray-700">Message</label>
                       <textarea
                         name="message"
                         rows={4}
@@ -525,14 +545,14 @@ export default function Tenants() {
                       />
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                       <button 
                         type="button"
                         onClick={() => {
                           setShowBooking(false);
                           setSelectedRequest(null);
                         }}
-                        className="text-sm font-semibold text-gray-500 hover:text-black"
+                        className="text-sm font-semibold text-gray-500 hover:text-black order-2 sm:order-1"
                         disabled={loading}
                       >
                         Cancel
@@ -540,7 +560,7 @@ export default function Tenants() {
                       <button 
                         type="submit"
                         disabled={loading}
-                        className="rounded-md bg-[#051A2C] px-6 py-2 text-sm font-semibold text-white shadow hover:bg-[#031121] disabled:opacity-50"
+                        className="w-full sm:w-auto rounded-md bg-[#051A2C] px-6 py-2 text-sm font-semibold text-white shadow hover:bg-[#031121] disabled:opacity-50 order-1 sm:order-2"
                       >
                         {loading ? 'Processing...' : 'Add'}
                       </button>
@@ -554,9 +574,9 @@ export default function Tenants() {
 
         {/* View Cancelled Bookings */}
         {showCancelled && (
-          <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-200 lg:col-span-2">
+          <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 shadow-sm border border-gray-200 lg:col-span-2">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-              <h3 className="text-2xl font-bold text-gray-900">Cancelled Bookings</h3>
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900">Cancelled Bookings</h3>
               <button 
                 onClick={() => setShowCancelled(false)}
                 className="text-sm font-semibold text-gray-500 hover:text-black"
@@ -566,29 +586,29 @@ export default function Tenants() {
             </div>
 
             {cancelledBookings.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 text-sm">
                 No cancelled bookings
               </div>
             ) : (
-              <div className="mt-6 space-y-3">
+              <div className="mt-4 sm:mt-6 space-y-3">
                 {cancelledBookings.map((booking) => (
-                  <div key={booking.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <div className="flex justify-between items-start">
+                  <div key={booking.id} className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-2">
                       <div>
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-gray-900 text-sm">
                           {booking.profiles?.full_name || 'Unknown'} - Room {booking.rooms?.room_number}
                         </p>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
                           Phone: {booking.profiles?.phone || 'N/A'}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           Price: ₱{booking.rooms?.price_monthly?.toLocaleString()}/mo
                         </p>
                         <p className="text-xs text-gray-500 mt-2">
                           Cancelled: {new Date(booking.decided_at).toLocaleString()}
                         </p>
                       </div>
-                      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
+                      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold w-fit">
                         CANCELLED
                       </span>
                     </div>
