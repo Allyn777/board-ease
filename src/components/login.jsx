@@ -35,7 +35,6 @@ const Login = () => {
         setErrors({ general: res.error.message || 'Login failed' })
       } else {
         // Success - the route protection in App.jsx will handle the redirect automatically
-        console.log('Login successful, redirecting...')
         // The auth state change will trigger the redirect in App.jsx
       }
     } catch (error) {

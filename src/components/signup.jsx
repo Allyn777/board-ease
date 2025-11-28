@@ -28,7 +28,6 @@ const Signup = () => {
 
     if (Object.keys(validationErrors).length === 0) {
         const res = await auth.signUp(formData.email, formData.password)
-        console.debug('signup response', res)
         if (res.error) {
           // show detailed server error if available
           const message = res.error?.message || (res.error && JSON.stringify(res.error)) || String(res.error)
