@@ -216,10 +216,10 @@ This application is deployed and hosted on **Vercel** for optimal performance an
 
 **Developed by:**
 - Allyn Marc C. Dumapias
-- Dec Florhen A. Uy
+- Dec Florhen T. Uy
 
-**Institution:** [Your School/University Name]  
-**Course:** [Your Course Name]  
+**Institution:** [St Peters College]  
+**Course:** [BSIT]  
 **Year:** 2025
 
 ---
