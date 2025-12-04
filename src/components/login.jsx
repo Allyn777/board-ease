@@ -111,10 +111,14 @@ const Login = () => {
                     {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
                   </div>
                  
-                  <button type="button" onClick={handleForgotPassword} className="text-sm text-black hover:text-blue-400 transition-colors ml-75">
-                        Forgot your Password?
-                      </button>
-
+                  <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-sm text-black hover:text-blue-400 transition-colors 
+                            ml-0 sm:ml-20 md:ml-75"
+                >
+                  Forgot your Password?
+                </button>
                   {errors.general && (
                     <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm">
                       {errors.general}
